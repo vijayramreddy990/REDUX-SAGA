@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { MDBValidation, MDBInput, MDBBtn } from "mdb-react-ui-kit";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { createUserStart } from "../redux/actions";
 
 const initialState = {
   name: "",
@@ -13,9 +15,19 @@ const AddEditUser = () => {
   const [formValue, setFormValue] = useState(initialState);
   const { name, email, phone, address } = formValue;
 
+  const dispatch = useDispatch();
+
   const navigate = useNavigate();
 
-  const handleSubmit = () => {};
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (name && email && phone && address) {
+      dispatch(createUserStart(formValue));
+      setTimeout(() => {
+        navigate("/");
+      }, 500);
+    }
+  };
 
   const onInputChange = (e) => {
     let { name, value } = e.target;

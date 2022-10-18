@@ -1,11 +1,18 @@
 {
-    "users": [
-        {
-            "id": 1,
-            "name": "James",
-            "email": "james@gmail.com",
-            "phone": 9398686825,
-            "address": "USA"
-        }
-    ]
+  "users": [
+    {
+      "id": 1,
+      "name": "James",
+      "email": "james@gmail.com",
+      "phone": 9398686825,
+      "address": "USA"
+    },
+    {
+      "name": "Nallamilli Vijayaram Reddy ",
+      "email": "vijayramreddy990@gmail.com",
+      "phone": "8688263699",
+      "address": "Kovvur",
+      "id": 2
+    }
+  ]
 }

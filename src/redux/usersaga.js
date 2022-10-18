@@ -9,9 +9,14 @@ import {
   fork,
   call,
 } from "redux-saga/effects";
-import { loadUsersSuccess, loadUsersError } from "./actions";
+import {
+  loadUsersSuccess,
+  loadUsersError,
+  createUserSuccess,
+  createUserError,
+} from "./actions";
 import * as types from "./actionTypes";
-import { loadUsersApi } from "./api";
+import { createUserApi, loadUsersApi } from "./api";
 
 export function* onLoadUsersStartAsync() {
   try {
@@ -25,9 +30,24 @@ export function* onLoadUsersStartAsync() {
   }
 }
 
+export function* onCreateUserStartAsync({ payload }) {
+  try {
+    const response = yield call(createUserApi, payload);
+    if (response.status === 200) {
+      yield put(createUserSuccess());
+    }
+  } catch (error) {
+    yield put(createUserError(error.response.data));
+  }
+}
+
 //when ever this action tipe is matched it will fire the respective handler
 export function* onLoadUsers() {
   yield takeEvery(types.LOAD_USERS_START, onLoadUsersStartAsync);
+}
+
+export function* onCreateUser() {
+  yield takeLatest(types.CREATE_USER_START, onCreateUserStartAsync);
 }
 
 /*
@@ -35,7 +55,7 @@ fork allows you to run some tasks in a parallel fashion.
 Forking tasks will make them non-blocking so they will run 
 smoothly in the background
 */
-const userSagas = [fork(onLoadUsers)];
+const userSagas = [fork(onLoadUsers), fork(onCreateUser)];
 
 /*
 A root saga aggregates multiple sagas to a single entry
