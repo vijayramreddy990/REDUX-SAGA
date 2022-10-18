@@ -14,11 +14,13 @@ import {
   loadUsersError,
   createUserSuccess,
   createUserError,
+  deleteUserError,
+  deleteUserSuccess,
 } from "./actions";
 import * as types from "./actionTypes";
-import { createUserApi, loadUsersApi } from "./api";
+import { createUserApi, deleteUserApi, loadUsersApi } from "./api";
 
-export function* onLoadUsersStartAsync() {
+function* onLoadUsersStartAsync() {
   try {
     const response = yield call(loadUsersApi);
     if (response.status === 200) {
@@ -30,7 +32,7 @@ export function* onLoadUsersStartAsync() {
   }
 }
 
-export function* onCreateUserStartAsync({ payload }) {
+function* onCreateUserStartAsync({ payload }) {
   try {
     const response = yield call(createUserApi, payload);
     if (response.status === 200) {
@@ -41,13 +43,33 @@ export function* onCreateUserStartAsync({ payload }) {
   }
 }
 
+function* onDeleteUserStartAsync(userId) {
+  try {
+    const response = yield call(deleteUserApi, userId);
+    if (response.status === 200) {
+      yield delay(500);
+      yield put(deleteUserSuccess(userId));
+    }
+  } catch (error) {
+    yield put(deleteUserError(error.response.data));
+  }
+}
+
 //when ever this action tipe is matched it will fire the respective handler
-export function* onLoadUsers() {
+function* onLoadUsers() {
   yield takeEvery(types.LOAD_USERS_START, onLoadUsersStartAsync);
 }
 
-export function* onCreateUser() {
+function* onCreateUser() {
   yield takeLatest(types.CREATE_USER_START, onCreateUserStartAsync);
+}
+
+function* onDeleteUser() {
+  //   yield take(types.DELETE_USER_START, onDeleteUserStartAsync);
+  while (true) {
+    const { payload: userId } = yield take(types.DELETE_USER_START);
+    yield call(onDeleteUserStartAsync, userId);
+  }
 }
 
 /*
@@ -55,7 +77,7 @@ fork allows you to run some tasks in a parallel fashion.
 Forking tasks will make them non-blocking so they will run 
 smoothly in the background
 */
-const userSagas = [fork(onLoadUsers), fork(onCreateUser)];
+const userSagas = [fork(onLoadUsers), fork(onCreateUser), fork(onDeleteUser)];
 
 /*
 A root saga aggregates multiple sagas to a single entry

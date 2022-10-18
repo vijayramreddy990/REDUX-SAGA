@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { loadUsersStart } from "../redux/actions";
+import { deleteUserStart, loadUsersStart } from "../redux/actions";
 import {
   MDBTable,
   MDBTableHead,
@@ -11,6 +11,7 @@ import {
   MDBSpinner,
 } from "mdb-react-ui-kit";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -20,7 +21,12 @@ const Home = () => {
     dispatch(loadUsersStart());
   }, []);
 
-  const handleDelete = (id) => {};
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you wanted to delete the user?")) {
+      dispatch(deleteUserStart(id));
+      toast.success("User deleted successfully");
+    }
+  };
 
   return (
     <div className="container" style={{ marginTop: "150px" }}>
