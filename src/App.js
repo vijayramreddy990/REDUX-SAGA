@@ -6,11 +6,14 @@ import AddEditUser from "./pages/AddEditUser";
 import UserInfo from "./pages/UserInfo";
 import About from "./pages/About";
 import Header from "./component/Header";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
   return (
     <BrowserRouter>
       <div className="App">
+        <ToastContainer />
         <Header />
         <Routes>
           <Route exact path="/" element={<Home />} />
