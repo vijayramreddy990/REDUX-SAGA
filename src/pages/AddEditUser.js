@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MDBValidation, MDBInput, MDBBtn } from "mdb-react-ui-kit";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { createUserStart } from "../redux/actions";
 import { ToastContainer, toast } from "react-toastify";
 
@@ -14,11 +14,26 @@ const initialState = {
 
 const AddEditUser = () => {
   const [formValue, setFormValue] = useState(initialState);
+  const [editMode, setEditMode] = useState(false);
   const { name, email, phone, address } = formValue;
+
+  const { users } = useSelector((state) => state.data);
 
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
+
+  const { id } = useParams();
+
+  useEffect(() => {
+    if (id) {
+      const singleUser = users.find((item) => item.id === Number(id));
+      setFormValue({
+        ...singleUser,
+      });
+      setEditMode(true);
+    }
+  }, [id]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -45,7 +60,9 @@ const AddEditUser = () => {
       style={{ marginTop: "100px" }}
       onSubmit={handleSubmit}
     >
-      <p className="fs-2 fw-bold">Add User Detail</p>
+      <p className="fs-2 fw-bold">
+        {editMode ? "Update User Detail" : "Add User Detail"}
+      </p>
       <div
         style={{
           margin: "auto",
@@ -55,7 +72,7 @@ const AddEditUser = () => {
         }}
       >
         <MDBInput
-          value={name}
+          value={name || ""}
           name="name"
           type="text"
           onChange={onInputChange}
@@ -66,7 +83,7 @@ const AddEditUser = () => {
         />
         <br />
         <MDBInput
-          value={email}
+          value={email || ""}
           name="email"
           type="email"
           onChange={onInputChange}
@@ -77,7 +94,7 @@ const AddEditUser = () => {
         />
         <br />
         <MDBInput
-          value={phone}
+          value={phone || ""}
           name="phone"
           type={"number"}
           onChange={onInputChange}
@@ -88,7 +105,7 @@ const AddEditUser = () => {
         />
         <br />
         <MDBInput
-          value={address}
+          value={address || ""}
           name="address"
           type={"text"}
           onChange={onInputChange}
@@ -100,7 +117,7 @@ const AddEditUser = () => {
       </div>
       <div className="col-12">
         <MDBBtn style={{ marginRight: "10px" }} type="submit">
-          Add
+          {editMode ? "Update User Data" : "Add User Data"}
         </MDBBtn>
         <MDBBtn onClick={() => navigate("/")} color="danger">
           Go Back
