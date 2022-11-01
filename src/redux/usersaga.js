@@ -16,9 +16,16 @@ import {
   createUserError,
   deleteUserError,
   deleteUserSuccess,
+  updateUserSuccess,
+  updateUserError,
 } from "./actions";
 import * as types from "./actionTypes";
-import { createUserApi, deleteUserApi, loadUsersApi } from "./api";
+import {
+  createUserApi,
+  deleteUserApi,
+  loadUsersApi,
+  updateUserApi,
+} from "./api";
 
 function* onLoadUsersStartAsync() {
   try {
@@ -55,6 +62,18 @@ function* onDeleteUserStartAsync(userId) {
   }
 }
 
+function* onUpdateUserStartAsync({ payload: { id, formValue } }) {
+  try {
+    const response = yield call(updateUserApi, id, formValue);
+    if (response.status === 200) {
+      yield delay(500);
+      yield put(updateUserSuccess());
+    }
+  } catch (error) {
+    yield put(updateUserError(error.response.data));
+  }
+}
+
 //when ever this action tipe is matched it will fire the respective handler
 function* onLoadUsers() {
   yield takeEvery(types.LOAD_USERS_START, onLoadUsersStartAsync);
@@ -65,11 +84,14 @@ function* onCreateUser() {
 }
 
 function* onDeleteUser() {
-  //   yield take(types.DELETE_USER_START, onDeleteUserStartAsync);
   while (true) {
     const { payload: userId } = yield take(types.DELETE_USER_START);
     yield call(onDeleteUserStartAsync, userId);
   }
+}
+
+function* onUpdateUser() {
+  yield takeLatest(types.UPDATE_USER_START, onUpdateUserStartAsync);
 }
 
 /*
@@ -77,7 +99,12 @@ fork allows you to run some tasks in a parallel fashion.
 Forking tasks will make them non-blocking so they will run 
 smoothly in the background
 */
-const userSagas = [fork(onLoadUsers), fork(onCreateUser), fork(onDeleteUser)];
+const userSagas = [
+  fork(onLoadUsers),
+  fork(onCreateUser),
+  fork(onDeleteUser),
+  fork(onUpdateUser),
+];
 
 /*
 A root saga aggregates multiple sagas to a single entry

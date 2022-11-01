@@ -11,10 +11,12 @@ const usersReducer = (state = initialState, action) => {
     case types.LOAD_USERS_START:
     case types.CREATE_USER_START:
     case types.DELETE_USER_START:
+    case types.UPDATE_USER_START:
       return {
         ...state,
         loading: true,
       };
+
     case types.LOAD_USERS_SUCCESS:
       return {
         ...state,
@@ -22,6 +24,7 @@ const usersReducer = (state = initialState, action) => {
         loading: false,
       };
     case types.CREATE_USER_SUCCESS:
+    case types.UPDATE_USER_SUCCESS:
       return {
         ...state,
         loading: false,
@@ -32,9 +35,11 @@ const usersReducer = (state = initialState, action) => {
         users: state.users.filter((item) => item.id !== action.payload),
         loading: false,
       };
+
     case types.LOAD_USERS_ERROR:
     case types.CREATE_USER_ERROR:
     case types.DELETE_USER_ERROR:
+    case types.UPDATE_USER_ERROR:
       return {
         ...state,
         error: action.payload,

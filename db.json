@@ -1,11 +1,18 @@
 {
   "users": [
     {
-      "name": "vijay",
-      "email": "venkatarama1612@gmail.com",
+      "id": 4,
+      "name": "Vijayaram Reddy ",
+      "email": "vijayramreddy990@gmail.com",
       "phone": "9398686825",
-      "address": "Mandapeta",
-      "id": 3
+      "address": "Kovvur"
+    },
+    {
+      "name": "vijay",
+      "email": "vj@216.com",
+      "phone": "86686895595",
+      "address": "kovvur",
+      "id": 5
     }
   ]
 }

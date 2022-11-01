@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { MDBValidation, MDBInput, MDBBtn } from "mdb-react-ui-kit";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { createUserStart } from "../redux/actions";
+import { createUserStart, updateUserStart } from "../redux/actions";
 import { ToastContainer, toast } from "react-toastify";
 
 const initialState = {
@@ -38,8 +38,14 @@ const AddEditUser = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (name && email && phone && address) {
-      dispatch(createUserStart(formValue));
-      toast.success("User Added Successfully");
+      if (!editMode) {
+        dispatch(createUserStart(formValue));
+        toast.success("User Added Successfully");
+      } else {
+        dispatch(updateUserStart({ id, formValue }));
+        setEditMode(false);
+        toast.success("User Updated Successfully");
+      }
       setTimeout(() => {
         navigate("/");
       }, 500);
